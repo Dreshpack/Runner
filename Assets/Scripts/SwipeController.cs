@@ -1,99 +1,99 @@
 using UnityEngine;
+using System;
+using UnityEngine.EventSystems;
 
-public class SwipeController : MonoBehaviour
+public enum SwipeDirection
 {
-    public bool _tap, _swipeLeft, _swipeRight, _swipeUp, _swipeDown;
-    private bool _isDragging = false;
-    private Vector2 _startTouch, _swipeDelta;
+    leftSwipe,
+    rightSwipe, 
+    upSwipe,
+    downSwipe,
+    noSwipe
+}
+public class SwipeController : MonoBehaviour, InputManager, IPointerDownHandler, IDragHandler, IEndDragHandler
+{
+    private Vector2 _startTouch = Vector2.zero;
 
-    private void FixedUpdate()
+    private Vector2 _difference;
+    public event Action isJumping;
+    public event Action isRolling;
+
+    public Side MovementInput()
     {
-        SwipeControll();
-    }
-    
-    private void SwipeControll()
-    {
-        _tap = _swipeLeft = _swipeRight = _swipeUp = _swipeDown = false;
-        if(Input.GetKeyDown(KeyCode.LeftArrow))
+        if(Math.Abs(_difference.x) >Math.Abs(_difference.y))
         {
-            _swipeLeft = true;
-        }
-        if(Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            _swipeRight = true;
-        }
-        if (Input.GetMouseButtonDown(0))
-        {
-            _tap = true;
-            _isDragging = true;
-            _startTouch = Input.mousePosition;
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            _isDragging = false;
-            Reset();
-        }
-        if (Input.touches.Length > 0)
-        {
-            if(Input.touches[0].phase == TouchPhase.Began)
+            if (_difference.x < 0)
             {
-                _tap = true;
-                _isDragging = true;
-                _startTouch = Input.touches[0].position;
+                _difference = Vector2.zero;
+                return Side.left;
             }
-            else if (Input.touches[0].phase == TouchPhase.Ended || Input.touches[0].phase == TouchPhase.Canceled)
+            if (_difference.x > 0)
             {
-                _isDragging = false;
-                Reset();
-            }
-            _swipeDelta = Vector2.zero;
-            if(_isDragging)
-            {
-                if(Input.touches.Length < 0)
-                {
-                    _swipeDelta = (Vector2)Input.touches[0].position - _startTouch;
-                }
-                else if(Input.GetMouseButton(0))
-                {
-                    _swipeDelta = (Vector2)Input.mousePosition - _startTouch;
-                }
-
-
-                if(_swipeDelta.magnitude > 100)
-                {
-                    float x = _swipeDelta.x;
-                    float y = _swipeDelta.y;
-                    if(Mathf.Abs(x) > Mathf.Abs(y))
-                    {
-                        if(x < 0)
-                        {
-                            _swipeLeft = true;
-                        }
-                        else
-                        {
-                            _swipeRight = true;
-                        }
-                    }
-                    else
-                    {
-                        if(y < 0)
-                        {
-                            _swipeDown = true;
-                        }
-                        else
-                        {
-                            _swipeUp = true;
-                        }
-                    }
-                }
+                _difference = Vector2.zero;
+                return Side.right;
             }
         }
+        return Side.middle;
     }
-    private void Reset()
+
+    public void CheckInput()
     {
-        _startTouch = _swipeDelta = Vector2.zero;
-        _isDragging = false;
+        Debug.Log(_difference);
+        if(_difference.y < _difference.x)
+        {
+            if (_difference.y < 0)
+            {
+                _difference = Vector2.zero;
+                isRolling?.Invoke();
+            }
+            if (_difference.y > 0)
+            {
+                _difference = Vector2.zero;
+                isJumping?.Invoke();
+            }
+        }    
     }
 
+    private SwipeDirection DefineSwipe()
+    {
+        if (_difference.y > _difference.x)
+        {
 
+            if (_difference.y < 0)
+                return SwipeDirection.downSwipe;
+            else if (_difference.y > 0)
+                return SwipeDirection.upSwipe;
+        }
+        else
+        {
+            if (_difference.x < 0)
+                return SwipeDirection.leftSwipe;
+            else if (_difference.x > 0)
+                return SwipeDirection.rightSwipe;
+        }
+        return SwipeDirection.noSwipe;
+    }
+
+    public void OnDrag(PointerEventData data)
+    {
+        Vector2 delta = data.position - _startTouch;
+        _difference = delta;
+        _startTouch = data.position;
+        Debug.Log(_difference);
+        /*
+        Debug.Log("a");
+        _difference = new Vector2(data.pressPosition.x - data.position.x, data.pressPosition.y - data.position.y);
+        Debug.Log(data.pressPosition.x - data.position.x);
+        //DefineSwipe();
+        */
+    }
+    public void OnEndDrag(PointerEventData data)
+    {
+
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        _startTouch = eventData.position;
+    }
 }

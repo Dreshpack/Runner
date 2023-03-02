@@ -6,6 +6,7 @@ public enum Side { left, middle, right }
 
 public class Moving : MonoBehaviour
 {
+    [SerializeField] private SwipeController _swipe;
     [SerializeField] private CharacterController _characterController;
     [SerializeField] private Collision _collision;
 
@@ -32,9 +33,13 @@ public class Moving : MonoBehaviour
     private void Awake()
     {
 #if UNITY_EDITOR
-        SetStrategy(new InputKeyboard());
+        //SetStrategy(new InputKeyboard());
+        SetStrategy(_swipe);
 #endif
-
+#if UNITY_ANDROID
+        SetStrategy(_swipe);
+        //SetStrategy(new SwipeController());
+#endif
         _colHeight = _characterController.height;
         _colCenterY = _characterController.center.y;
     }

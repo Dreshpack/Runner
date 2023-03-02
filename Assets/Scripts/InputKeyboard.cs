@@ -3,6 +3,9 @@ using System;
 
 public class InputKeyboard : InputManager
 {
+    public event Action isJumping;
+    public event Action isRolling;
+
     public Side MovementInput()
     {
         if(Input.GetKeyDown(KeyCode.LeftArrow))
@@ -13,10 +16,7 @@ public class InputKeyboard : InputManager
 
         return Side.middle;
     }
-    public delegate bool roll();
 
-    public event Action isJumping;
-    public event Action isRolling;
     public void CheckInput()
     {
         if (Input.GetKeyDown(KeyCode.UpArrow))
