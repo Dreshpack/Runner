@@ -5,18 +5,21 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private Moving moving;
-    [SerializeField] private CharacterController _characterController;
-    [SerializeField] private SwipeController swipeController;
-    
+    [SerializeField] private Collision _collision;
+    [SerializeField] private GameObject _gameOverPanel;
 
-    private void Awake()
+    private void OnEnable()
     {
-        transform.position = new Vector3(0,1.2f,0);
+        _collision.isDead += Dead;
     }
 
-    private void FixedUpdate()
+    private void OnDisable()
     {
-        moving.Move();
+        _collision.isDead -= Dead;
+    }
+
+    private void Dead()
+    {
+        Debug.Log("is dead");
     }
 }

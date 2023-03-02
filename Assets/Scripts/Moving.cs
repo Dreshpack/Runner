@@ -7,6 +7,7 @@ public enum Side { left, middle, right }
 public class Moving : MonoBehaviour
 {
     [SerializeField] private CharacterController _characterController;
+    [SerializeField] private Collision _collision;
 
     private InputManager _inputType;
 
@@ -14,7 +15,7 @@ public class Moving : MonoBehaviour
     private float _newXPos = 0f;
     private float _xValue = 3;
     private float _dodgeSpeed = 9;
-    [SerializeField] private float x, y;
+    private float x, y;
 
     private bool _isJumping = false;
     private bool _isRolling;
@@ -25,6 +26,8 @@ public class Moving : MonoBehaviour
     private float _rollCounter;
 
     private float _forwardSpeed = 7;
+
+    private bool _isDead = false;
 
     private void Awake()
     {
@@ -38,18 +41,21 @@ public class Moving : MonoBehaviour
 
     private void OnEnable()
     {
+        _collision.isDead += Die;
         _inputType.isJumping += Jump;
         _inputType.isRolling += Roll;
     }
 
     private void OnDisable()
     {
+        _collision.isDead -= Die;
         _inputType.isJumping -= Jump;
         _inputType.isRolling -= Roll;
     }
 
     private void FixedUpdate()
     {
+        if(!_isDead)
         Move();
     }
 
@@ -143,5 +149,10 @@ public class Moving : MonoBehaviour
         Vector3 moveVector = new Vector3((x - transform.position.x), y * Time.deltaTime, _forwardSpeed * Time.deltaTime);
         x = Mathf.Lerp(x, _newXPos, Time.deltaTime * _dodgeSpeed);
         _characterController.Move(moveVector);
+    }
+
+    private void Die()
+    {
+        _isDead = true;
     }
 }
