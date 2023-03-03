@@ -17,19 +17,24 @@ public class SwipeController : MonoBehaviour, InputManager, IPointerDownHandler,
     private Vector2 _difference;
     public event Action isJumping;
     public event Action isRolling;
+    public event Action leftMove;
+    public event Action rightMove;
 
     public Side MovementInput()
     {
-        if(Math.Abs(_difference.x) >Math.Abs(_difference.y))
+        if(Math.Abs(_difference.x) > Math.Abs(_difference.y))
         {
             if (_difference.x < 0)
             {
-                _difference = Vector2.zero;
+                //_difference = Vector2.zero;
+                Debug.Log(leftMove);
+                leftMove?.Invoke();
                 return Side.left;
             }
             if (_difference.x > 0)
             {
-                _difference = Vector2.zero;
+                //_difference = Vector2.zero;
+                rightMove?.Invoke();
                 return Side.right;
             }
         }
@@ -38,8 +43,7 @@ public class SwipeController : MonoBehaviour, InputManager, IPointerDownHandler,
 
     public void CheckInput()
     {
-        Debug.Log(_difference);
-        if(_difference.y < _difference.x)
+        if(Math.Abs(_difference.y) >Math.Abs(_difference.x))
         {
             if (_difference.y < 0)
             {
@@ -79,21 +83,16 @@ public class SwipeController : MonoBehaviour, InputManager, IPointerDownHandler,
         Vector2 delta = data.position - _startTouch;
         _difference = delta;
         _startTouch = data.position;
-        Debug.Log(_difference);
-        /*
-        Debug.Log("a");
-        _difference = new Vector2(data.pressPosition.x - data.position.x, data.pressPosition.y - data.position.y);
-        Debug.Log(data.pressPosition.x - data.position.x);
-        //DefineSwipe();
-        */
     }
     public void OnEndDrag(PointerEventData data)
     {
-
+        MovementInput();
+        CheckInput();
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
         _startTouch = eventData.position;
+        
     }
 }

@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public enum Side { left, middle, right }
 
 public class Moving : MonoBehaviour
 {
+    [SerializeField] private NavMeshAgent _meshAgent;
+    [SerializeField] private Animator _animator;
     [SerializeField] private SwipeController _swipe;
     [SerializeField] private CharacterController _characterController;
     [SerializeField] private Collision _collision;
@@ -19,7 +22,6 @@ public class Moving : MonoBehaviour
     private float x, y;
 
     private bool _isJumping = false;
-    private bool _isRolling;
     private float _jumpPower = 10;
 
     private float _colHeight;
@@ -33,8 +35,8 @@ public class Moving : MonoBehaviour
     private void Awake()
     {
 #if UNITY_EDITOR
-        //SetStrategy(new InputKeyboard());
-        SetStrategy(_swipe);
+        SetStrategy(new InputKeyboard());
+        //SetStrategy(_swipe);
 #endif
 #if UNITY_ANDROID
         SetStrategy(_swipe);
@@ -42,6 +44,7 @@ public class Moving : MonoBehaviour
 #endif
         _colHeight = _characterController.height;
         _colCenterY = _characterController.center.y;
+        _animator.SetFloat("speed", _forwardSpeed);
     }
 
     private void OnEnable()
@@ -49,6 +52,9 @@ public class Moving : MonoBehaviour
         _collision.isDead += Die;
         _inputType.isJumping += Jump;
         _inputType.isRolling += Roll;
+        _inputType.leftMove += LeftMove;
+        _inputType.rightMove += RightMove;
+
     }
 
     private void OnDisable()
@@ -56,12 +62,23 @@ public class Moving : MonoBehaviour
         _collision.isDead -= Die;
         _inputType.isJumping -= Jump;
         _inputType.isRolling -= Roll;
+        _inputType.leftMove -= LeftMove;
+        _inputType.rightMove -= RightMove;
+    }
+
+    private void IncreaseSpeed()
+    {
+        if(_forwardSpeed < 50)
+        _forwardSpeed += Time.deltaTime * 0.1f;
     }
 
     private void FixedUpdate()
     {
         if(!_isDead)
-        Move();
+        {
+            Move();
+            IncreaseSpeed();
+        }
     }
 
     private void SetStrategy(InputManager inputType)
@@ -76,6 +93,8 @@ public class Moving : MonoBehaviour
         {
             y = _jumpPower;
             _isJumping = true;
+            _animator.SetTrigger("jump");
+            Debug.Log(_animator.GetBool("isJumping"));
         }
     }
 
@@ -87,14 +106,42 @@ public class Moving : MonoBehaviour
             _rollCounter = 0f;
             _characterController.center = new Vector3(0, _colCenterY, 0);
             _characterController.height = _colHeight;
-            _isRolling = false;
         }
         _rollCounter = 0.2f;
         y -= 10f;
         _characterController.center = new Vector3(0, _colCenterY/4, 0);
         _characterController.height = _colHeight/4;
-        _isRolling = true;
+        _animator.SetTrigger("slide");
         _isJumping = false;
+    }
+
+    private void RightMove()
+    {
+        Debug.Log("right");
+        if (_side == Side.middle)
+        {
+            _newXPos = _xValue;
+            _side = Side.right;
+        }
+        else if (_side == Side.left)
+        {
+            _newXPos = 0;
+            _side = Side.middle;
+        }
+    }
+
+    private void LeftMove()
+    {
+        if (_side == Side.middle)
+        {
+            _newXPos = -_xValue;
+            _side = Side.left;
+        }
+        else if (_side == Side.right)
+        {
+            _newXPos = 0;
+            _side = Side.middle;
+        }
     }
 
     private void NormalizationVertical()
@@ -110,47 +157,12 @@ public class Moving : MonoBehaviour
             _rollCounter = 0f;
             _characterController.center = new Vector3(0, _colCenterY, 0);
             _characterController.height = _colHeight;
-            _isRolling = false;
-        }
-    }
-
-    private void HorizontalMovement()
-    {
-        _inputType.MovementInput();
-        Side inputSide = _inputType.MovementInput();
-        if (inputSide == Side.left)
-        {
-            if (_side == Side.middle)
-            {
-                _newXPos = -_xValue;
-                _side = Side.left;
-            }
-            else if (_side == Side.right)
-            {
-                _newXPos = 0;
-                _side = Side.middle;
-            }
-        }
-        else if (inputSide == Side.right)
-        {
-            if (_side == Side.middle)
-            {
-                _newXPos = _xValue;
-                _side = Side.right;
-            }
-            else if (_side == Side.left)
-            {
-                _newXPos = 0;
-                _side = Side.middle;
-            }
         }
     }
 
     public void Move()
     {
         NormalizationVertical();
-        HorizontalMovement();
-        _inputType.CheckInput();
         Vector3 moveVector = new Vector3((x - transform.position.x), y * Time.deltaTime, _forwardSpeed * Time.deltaTime);
         x = Mathf.Lerp(x, _newXPos, Time.deltaTime * _dodgeSpeed);
         _characterController.Move(moveVector);
@@ -159,5 +171,7 @@ public class Moving : MonoBehaviour
     private void Die()
     {
         _isDead = true;
+        _animator.SetFloat("speed", 0);
+        _animator.SetTrigger("die");
     }
 }
