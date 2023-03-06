@@ -26,14 +26,11 @@ public class SwipeController : MonoBehaviour, InputManager, IPointerDownHandler,
         {
             if (_difference.x < 0)
             {
-                //_difference = Vector2.zero;
-                Debug.Log(leftMove);
                 leftMove?.Invoke();
                 return Side.left;
             }
             if (_difference.x > 0)
             {
-                //_difference = Vector2.zero;
                 rightMove?.Invoke();
                 return Side.right;
             }
@@ -57,27 +54,7 @@ public class SwipeController : MonoBehaviour, InputManager, IPointerDownHandler,
             }
         }    
     }
-
-    private SwipeDirection DefineSwipe()
-    {
-        if (_difference.y > _difference.x)
-        {
-
-            if (_difference.y < 0)
-                return SwipeDirection.downSwipe;
-            else if (_difference.y > 0)
-                return SwipeDirection.upSwipe;
-        }
-        else
-        {
-            if (_difference.x < 0)
-                return SwipeDirection.leftSwipe;
-            else if (_difference.x > 0)
-                return SwipeDirection.rightSwipe;
-        }
-        return SwipeDirection.noSwipe;
-    }
-
+    
     public void OnDrag(PointerEventData data)
     {
         Vector2 delta = data.position - _startTouch;

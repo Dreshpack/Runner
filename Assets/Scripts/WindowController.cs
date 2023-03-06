@@ -1,11 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class WindowController : MonoBehaviour
 {
     [SerializeField] private GameObject _regPanel;
     [SerializeField] private GameObject _logPanel;
+    [SerializeField] private Scene _regScene;
+    [SerializeField] private Scene _gameScene;
+
     private void Awake()
     {
         _regPanel.SetActive(true);
@@ -23,19 +25,15 @@ public class WindowController : MonoBehaviour
         _regPanel.SetActive(true);
         _logPanel.SetActive(false);
     }
+
     private void HideLogWindow()
     {
         _logPanel.SetActive(true);
     }
 
-    void Start()
+    public void ChangeScene()
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        SceneManager.LoadScene("RunnerScene");
+        SceneManager.UnloadSceneAsync("MainMenu");
     }
 }

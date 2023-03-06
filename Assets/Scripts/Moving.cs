@@ -12,6 +12,7 @@ public class Moving : MonoBehaviour
     [SerializeField] private SwipeController _swipe;
     [SerializeField] private CharacterController _characterController;
     [SerializeField] private Collision _collision;
+    [SerializeField] private Pause _pauseScript;
 
     private InputManager _inputType;
 
@@ -29,6 +30,7 @@ public class Moving : MonoBehaviour
     private float _rollCounter;
 
     private float _forwardSpeed = 7;
+    private float _currentSpeed;
 
     private bool _isDead = false;
 
@@ -44,7 +46,11 @@ public class Moving : MonoBehaviour
 #endif
         _colHeight = _characterController.height;
         _colCenterY = _characterController.center.y;
-        _animator.SetFloat("speed", _forwardSpeed);
+    }
+
+    private void Start()
+    {
+        _animator.SetFloat("speed", 1f);
     }
 
     private void OnEnable()
@@ -54,7 +60,8 @@ public class Moving : MonoBehaviour
         _inputType.isRolling += Roll;
         _inputType.leftMove += LeftMove;
         _inputType.rightMove += RightMove;
-
+        _pauseScript._pauseGame += PauseMovement;
+        _pauseScript._continueGame += ContinueGame;
     }
 
     private void OnDisable()
@@ -64,6 +71,8 @@ public class Moving : MonoBehaviour
         _inputType.isRolling -= Roll;
         _inputType.leftMove -= LeftMove;
         _inputType.rightMove -= RightMove;
+        _pauseScript._pauseGame -= PauseMovement;
+        _pauseScript._continueGame -= ContinueGame;
     }
 
     private void IncreaseSpeed()
@@ -74,7 +83,7 @@ public class Moving : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(!_isDead)
+        if(!_isDead && _forwardSpeed > 0)
         {
             Move();
             IncreaseSpeed();
@@ -94,7 +103,7 @@ public class Moving : MonoBehaviour
             y = _jumpPower;
             _isJumping = true;
             _animator.SetTrigger("jump");
-            Debug.Log(_animator.GetBool("isJumping"));
+            _animator.SetBool("isJumping", _isJumping);
         }
     }
 
@@ -107,7 +116,7 @@ public class Moving : MonoBehaviour
             _characterController.center = new Vector3(0, _colCenterY, 0);
             _characterController.height = _colHeight;
         }
-        _rollCounter = 0.2f;
+        _rollCounter = 0.5f;
         y -= 10f;
         _characterController.center = new Vector3(0, _colCenterY/4, 0);
         _characterController.height = _colHeight/4;
@@ -117,7 +126,6 @@ public class Moving : MonoBehaviour
 
     private void RightMove()
     {
-        Debug.Log("right");
         if (_side == Side.middle)
         {
             _newXPos = _xValue;
@@ -168,10 +176,26 @@ public class Moving : MonoBehaviour
         _characterController.Move(moveVector);
     }
 
+    private void PauseMovement()
+    {
+        _currentSpeed = _forwardSpeed;
+        _forwardSpeed = 0;
+        _animator.SetFloat("speed", _forwardSpeed);
+        _animator.speed = 0;
+    }
+
+    private void ContinueGame()
+    {
+        _forwardSpeed = _currentSpeed;
+        _animator.SetFloat("speed", _forwardSpeed);
+        _animator.speed = 1;
+    }
+
     private void Die()
     {
         _isDead = true;
-        _animator.SetFloat("speed", 0);
+        _animator.SetFloat("speed", 0f);
+        _animator.SetBool("isDead", _isDead);
         _animator.SetTrigger("die");
     }
 }

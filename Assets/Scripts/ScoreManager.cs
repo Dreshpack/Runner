@@ -6,19 +6,42 @@ public class ScoreManager : MonoBehaviour
 {
     [SerializeField] private TMP_Text _scoreText;
     [SerializeField] private Collision _collision;
+    [SerializeField] private Pause _pauseScript;
+    [SerializeField] private DataBase _dataBase;
 
     private float _score;
     private float _pointsPerSecond = 1;
     private bool _isDead = false;
+    private bool _paused = false;
 
     private void OnEnable()
     {
-        _collision.isDead += StopCounting;
+        _collision.isDead += Die;
+        _pauseScript._pauseGame += PauseCounting;
+        _pauseScript._continueGame += ContinueCounting;
     }
 
-    private void StopCounting()
+    private void OnDisable()
     {
+        _collision.isDead -= Die;
+        _pauseScript._pauseGame -= PauseCounting;
+        _pauseScript._continueGame -= ContinueCounting;
+    }
+
+    private void Die()
+    {
+        _dataBase.SetScore(PlayerPrefs.GetString("Name"), (int)_score);
         _isDead = true;
+    }
+
+    private void PauseCounting()
+    {
+        _paused = true;
+    }
+
+    private void ContinueCounting()
+    {
+        _paused = false;
     }
 
     private void UpdateScore()
@@ -32,7 +55,7 @@ public class ScoreManager : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if(!_isDead)
+        if(!_isDead && !_paused)
         UpdateScore();
         DisplayText();
     }
