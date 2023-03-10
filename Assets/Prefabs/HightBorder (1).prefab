@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 9041442991936593822}
   - component: {fileID: -7017418677398721673}
+  - component: {fileID: 1805358259571754887}
+  - component: {fileID: 5403853922625541102}
   m_Layer: 0
   m_Name: HightBorder (1)
   m_TagString: Border
@@ -46,6 +48,32 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.20161837, y: 2.9032698, z: 4.8435388}
   m_Center: {x: -0.08586211, y: 4.531926, z: -0.033877093}
+--- !u!65 &1805358259571754887
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2536787827688752896}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.2616519, y: 2.9761708, z: 0.071043156}
+  m_Center: {x: 0.044280276, y: 1.9773854, z: -2.0489414}
+--- !u!65 &5403853922625541102
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2536787827688752896}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.31691062, y: 3.0614755, z: 0.1811786}
+  m_Center: {x: -0.026084855, y: 1.5400102, z: 2.0346532}
 --- !u!1 &6863331526926596873
 GameObject:
   m_ObjectHideFlags: 0
@@ -73,7 +101,7 @@ Transform:
   m_GameObject: {fileID: 6863331526926596873}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 0.933126, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9041442991936593822}

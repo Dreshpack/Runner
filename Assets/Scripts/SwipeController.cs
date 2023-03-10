@@ -1,99 +1,75 @@
 using UnityEngine;
+using System;
+using UnityEngine.EventSystems;
 
-public class SwipeController : MonoBehaviour
+public enum SwipeDirection
 {
-    public bool _tap, _swipeLeft, _swipeRight, _swipeUp, _swipeDown;
-    private bool _isDragging = false;
-    private Vector2 _startTouch, _swipeDelta;
+    leftSwipe,
+    rightSwipe, 
+    upSwipe,
+    downSwipe,
+    noSwipe
+}
+public class SwipeController : MonoBehaviour, InputManager, IPointerDownHandler, IDragHandler, IEndDragHandler
+{
+    private Vector2 _startTouch = Vector2.zero;
 
-    private void FixedUpdate()
+    private Vector2 _difference;
+    public event Action isJumping;
+    public event Action isRolling;
+    public event Action leftMove;
+    public event Action rightMove;
+
+    public Side MovementInput()
     {
-        SwipeControll();
+        if(Math.Abs(_difference.x) > Math.Abs(_difference.y))
+        {
+            if (_difference.x < 0)
+            {
+                leftMove?.Invoke();
+                return Side.left;
+            }
+            if (_difference.x > 0)
+            {
+                rightMove?.Invoke();
+                return Side.right;
+            }
+        }
+        return Side.middle;
+    }
+
+    public void CheckInput()
+    {
+        if(Math.Abs(_difference.y) >Math.Abs(_difference.x))
+        {
+            if (_difference.y < 0)
+            {
+                _difference = Vector2.zero;
+                isRolling?.Invoke();
+            }
+            if (_difference.y > 0)
+            {
+                _difference = Vector2.zero;
+                isJumping?.Invoke();
+            }
+        }    
     }
     
-    private void SwipeControll()
+    public void OnDrag(PointerEventData data)
     {
-        _tap = _swipeLeft = _swipeRight = _swipeUp = _swipeDown = false;
-        if(Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            _swipeLeft = true;
-        }
-        if(Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            _swipeRight = true;
-        }
-        if (Input.GetMouseButtonDown(0))
-        {
-            _tap = true;
-            _isDragging = true;
-            _startTouch = Input.mousePosition;
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            _isDragging = false;
-            Reset();
-        }
-        if (Input.touches.Length > 0)
-        {
-            if(Input.touches[0].phase == TouchPhase.Began)
-            {
-                _tap = true;
-                _isDragging = true;
-                _startTouch = Input.touches[0].position;
-            }
-            else if (Input.touches[0].phase == TouchPhase.Ended || Input.touches[0].phase == TouchPhase.Canceled)
-            {
-                _isDragging = false;
-                Reset();
-            }
-            _swipeDelta = Vector2.zero;
-            if(_isDragging)
-            {
-                if(Input.touches.Length < 0)
-                {
-                    _swipeDelta = (Vector2)Input.touches[0].position - _startTouch;
-                }
-                else if(Input.GetMouseButton(0))
-                {
-                    _swipeDelta = (Vector2)Input.mousePosition - _startTouch;
-                }
-
-
-                if(_swipeDelta.magnitude > 100)
-                {
-                    float x = _swipeDelta.x;
-                    float y = _swipeDelta.y;
-                    if(Mathf.Abs(x) > Mathf.Abs(y))
-                    {
-                        if(x < 0)
-                        {
-                            _swipeLeft = true;
-                        }
-                        else
-                        {
-                            _swipeRight = true;
-                        }
-                    }
-                    else
-                    {
-                        if(y < 0)
-                        {
-                            _swipeDown = true;
-                        }
-                        else
-                        {
-                            _swipeUp = true;
-                        }
-                    }
-                }
-            }
-        }
+        Vector2 delta = data.position - _startTouch;
+        _difference = delta;
+        _startTouch = data.position;
     }
-    private void Reset()
+    public void OnEndDrag(PointerEventData data)
     {
-        _startTouch = _swipeDelta = Vector2.zero;
-        _isDragging = false;
+        MovementInput();
+        CheckInput();
     }
 
-
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        _startTouch = eventData.position;
+        
+    }
 }

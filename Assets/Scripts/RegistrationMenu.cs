@@ -4,6 +4,7 @@ using TMPro;
 using Firebase.Auth;
 using Firebase;
 using UnityEngine.Events;
+using System;
 
 public class RegistrationMenu : MonoBehaviour
 {
@@ -12,13 +13,17 @@ public class RegistrationMenu : MonoBehaviour
     [SerializeField] private TMP_InputField _passwordInput;
     [SerializeField] private TMP_InputField _passwordRepeatInput;
     [SerializeField] private TMP_Text _errorText;
-    [SerializeField] private TMP_Text _testText;
-    //[SerializeField] private GameObject windowController;
+    [SerializeField] private DataBase _dataBase;
+    [SerializeField] private WindowController _windowController;
 
-    public UnityEvent succesRegister;
-    //public DependencyStatus dependencyStatus;
+    public UnityEvent _succesRegister;
     private FirebaseAuth auth;
     private FirebaseUser _user;
+
+    private void OnEnable()
+    {
+        _succesRegister.AddListener(LoginCoroutine);
+    }
 
     private void Awake()
     {
@@ -35,6 +40,7 @@ public class RegistrationMenu : MonoBehaviour
         StartCoroutine(Login(_emailInput.text, _passwordInput.text));
         
     }
+
     private IEnumerator Login(string _email, string _password)
     {
         var LoginTask = auth.SignInWithEmailAndPasswordAsync(_emailInput.text, _passwordInput.text);
@@ -63,50 +69,15 @@ public class RegistrationMenu : MonoBehaviour
         else
         {
             _user = LoginTask.Result;
+            PlayerPrefs.SetString("Name", _user.DisplayName);
             Debug.LogFormat("User signed in successfully: {0} ({1})", _user.DisplayName, _user.Email);
             _errorText.text = "";
+            _windowController.ChangeScene();
         }
-
-        /*var LoginTask = auth.SignInWithEmailAndPasswordAsync(_emailInput.text, _passwordInput.text).ContinueWith(task =>
-        {
-            if (task.Exception != null)
-            {
-                Debug.LogWarning(message: $"Failed to login task with {task.Exception}");
-                FirebaseException firebaseEx = task.Exception.GetBaseException() as FirebaseException;
-                AuthError errorCode = (AuthError)firebaseEx.ErrorCode;
-
-                Debug.Log("log failed");
-                _testText.text = "log failed";
-                string errorMessage = "login failed";
-                switch (errorCode)
-                {
-                    case AuthError.MissingEmail:
-                        errorMessage = "Missing Email";
-                        break;
-                    case AuthError.MissingPassword:
-                        errorMessage = "Missing Password";
-                        break;
-                    case AuthError.UserNotFound:
-                        errorMessage = "User not found";
-                        break;
-                }
-                _errorText.text = errorMessage;
-            }
-            else
-            {
-                _user = task.Result;
-                Debug.LogFormat("User signed in successfully: {0} ({1})", _user.DisplayName, _user.Email);
-                _errorText.text = "";
-            }
-        });*/
-
-
     }
-
 
     private IEnumerator Register(string _email, string _password, string _username)
     {
-        Debug.Log("reg");
         if(_username == "")
         {
             Debug.Log("miss username");
@@ -126,7 +97,6 @@ public class RegistrationMenu : MonoBehaviour
                 Debug.LogWarning(message: $"Failed to register task with {RegisterTask.Exception}");
                 FirebaseException firebaseEx = RegisterTask.Exception.GetBaseException() as FirebaseException;
                 AuthError errorCode = (AuthError)firebaseEx.ErrorCode;
-
                 string errorMessage = "Register Failed!";
                 switch (errorCode)
                 {
@@ -154,13 +124,13 @@ public class RegistrationMenu : MonoBehaviour
                 if (_user != null)
                 {
                     UserProfile profile = new UserProfile { DisplayName = _username };
-
                     var ProfileTask = _user.UpdateUserProfileAsync(profile);
+                    Debug.Log("trying to save");
+                    _dataBase.SetNameDataBase(_username);
                     yield return new WaitUntil(predicate: () => ProfileTask.IsCompleted);
 
                     if (ProfileTask.Exception != null)
                     {
-                        //If there are errors handle them
                         Debug.LogWarning(message: $"Failed to register task with {ProfileTask.Exception}");
                         FirebaseException firebaseEx = ProfileTask.Exception.GetBaseException() as FirebaseException;
                         AuthError errorCode = (AuthError)firebaseEx.ErrorCode;
@@ -168,10 +138,7 @@ public class RegistrationMenu : MonoBehaviour
                     else
                     {
                         _errorText.text = "";
-                        succesRegister.Invoke();
-                        //StartCoroutine(Login(_email, _password));
-                        //Username is now set
-                        //Now return to login screen
+                        _succesRegister.Invoke();
                     }
                 }
             }
@@ -179,4 +146,5 @@ public class RegistrationMenu : MonoBehaviour
 
 
     }
+    
 }
