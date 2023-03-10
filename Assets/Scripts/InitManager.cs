@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class StartGame : MonoBehaviour
+public class InitManager : MonoBehaviour
 {
     [SerializeField] private GameObject _startPanel;
     [SerializeField] private GameObject _pauseButton;

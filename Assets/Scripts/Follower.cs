@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraFollowing : MonoBehaviour
+public class Follower : MonoBehaviour
 {
     [SerializeField] private Transform _target;
+
     private Vector3 _offset;
     private float _followingSpeed = 3f;
     private float y;
@@ -13,7 +14,13 @@ public class CameraFollowing : MonoBehaviour
     {
         _offset = transform.position - _target.position;
     }
+
     private void LateUpdate()
+    {
+        Folliwing();
+    }
+
+    private void Folliwing()
     {
         Vector3 followPos = _target.position + _offset;
         RaycastHit hit;

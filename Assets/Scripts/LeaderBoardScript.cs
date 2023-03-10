@@ -14,7 +14,6 @@ public class LeaderBoardScript : MonoBehaviour
     [SerializeField] DataBase _dataBase;
 
     private List<LeaderUI> _leaders = new List<LeaderUI>();
-    private LeaderUI[] _leaderList = new LeaderUI[10];
 
     public void CloseLeaderboard()
     {
@@ -36,7 +35,6 @@ public class LeaderBoardScript : MonoBehaviour
 
     public void CreateLeaders(DataSnapshot snapshot)
     {
-        int i = 0;
         foreach (DataSnapshot childSnap in snapshot.Children.Reverse<DataSnapshot>().Take(10))
         {
             string name = childSnap.Key.ToString();

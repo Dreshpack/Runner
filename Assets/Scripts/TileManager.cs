@@ -8,7 +8,7 @@ public class TileManager : MonoBehaviour
     [SerializeField] private GameObject[] _tilePrefabs = new GameObject[_numberOfTiles];
     [SerializeField] private Transform _playerTransform;
     [SerializeField] private RevivalAds _revivalAds;
-    [SerializeField] private Collision _collision;
+    [SerializeField] private PlayerCollision _playerCollision;
 
     private List<GameObject> _activeTiles = new List<GameObject>();
 
@@ -55,8 +55,8 @@ public class TileManager : MonoBehaviour
 
     private void DeleteSpecificTile()
     {
-        Debug.Log(_collision.currentBorder);
-        Destroy(_collision.currentBorder);
+        Debug.Log(_playerCollision.currentBorder);
+        Destroy(_playerCollision.currentBorder);
     }
 
     private void Start()

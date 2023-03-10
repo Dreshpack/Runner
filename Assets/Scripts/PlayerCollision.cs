@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-public class Collision : MonoBehaviour
+public class PlayerCollision : MonoBehaviour
 {
     [SerializeField] CharacterController characterController;
     [SerializeField] RevivalAds _revivalAds;

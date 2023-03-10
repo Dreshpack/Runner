@@ -2,6 +2,7 @@ using UnityEngine;
 using Firebase.Database;
 using System;
 using System.Collections;
+using System.Linq;
 using TMPro;
 
 public class DataBase : MonoBehaviour
@@ -56,6 +57,29 @@ public class DataBase : MonoBehaviour
             _leader.text = snapshot.Child("Name").Value.ToString();
             _leader.text += snapshot.Child("Score").Value.ToString();
         }
+    }
+
+    public IEnumerator FindExistUsername(string name, IEnumerator callback, TMP_Text errorText)
+    {
+        var users = _dataBaseRef.Child("Users").GetValueAsync();
+        yield return new WaitUntil(predicate: () => users.IsCompleted);
+        if (users.Result != null)
+        {
+            bool usernameTaken = false;
+            DataSnapshot nameSnapshot = users.Result;
+            foreach (DataSnapshot childSnap in nameSnapshot.Children)
+            {
+                if (name.Equals(childSnap.Key.ToString()))
+                {
+                    usernameTaken = true;
+                    errorText.text = "username is taken";
+                    Debug.Log("username is already taken");
+                }
+            }
+            if (!usernameTaken)
+            StartCoroutine(callback);
+        }
+        //callback?.Invoke();
     }
 
     public IEnumerator Sort()

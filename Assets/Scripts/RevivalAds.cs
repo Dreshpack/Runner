@@ -17,6 +17,10 @@ public class RevivalAds : MonoBehaviour
 
     private void OnEnable()
     {
+        
+    }
+    private void Start()
+    {
         _ads = new RewardedAd(_rewardedUnitId);
         AdRequest adRequest = new AdRequest.Builder().Build();
         _ads.LoadAd(adRequest);
@@ -25,6 +29,7 @@ public class RevivalAds : MonoBehaviour
 
     private void HandleUserEarnedReward(object sender, Reward reward)
     {
+        Debug.Log("played poluchaeca");
         played?.Invoke();
     }
 
@@ -37,7 +42,6 @@ public class RevivalAds : MonoBehaviour
     {
         _adsButtonText.text = "Loading ADS";
         yield return new WaitUntil(predicate: () => _ads.IsLoaded());
-        //while(!_ads.IsLoaded())
         if(_ads.IsLoaded())
         {
             isPlaying?.Invoke();

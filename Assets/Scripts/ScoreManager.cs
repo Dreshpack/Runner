@@ -5,7 +5,7 @@ using TMPro;
 public class ScoreManager : MonoBehaviour
 {
     [SerializeField] private TMP_Text _scoreText;
-    [SerializeField] private Collision _collision;
+    [SerializeField] private PlayerCollision _playerCollision;
     [SerializeField] private Pause _pauseScript;
     [SerializeField] private DataBase _dataBase;
     [SerializeField] private RevivalAds _revivalAds;
@@ -17,7 +17,7 @@ public class ScoreManager : MonoBehaviour
 
     private void OnEnable()
     {
-        _collision.isDead += Die;
+        _playerCollision.isDead += Die;
         _pauseScript._pauseGame += PauseCounting;
         _pauseScript._continueGame += ContinueCounting;
         _revivalAds.played += Revive;
@@ -25,7 +25,7 @@ public class ScoreManager : MonoBehaviour
 
     private void OnDisable()
     {
-        _collision.isDead -= Die;
+        _playerCollision.isDead -= Die;
         _pauseScript._pauseGame -= PauseCounting;
         _pauseScript._continueGame -= ContinueCounting;
         _revivalAds.played -= Revive;

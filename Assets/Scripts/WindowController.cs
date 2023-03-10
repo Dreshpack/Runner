@@ -10,8 +10,11 @@ public class WindowController : MonoBehaviour
 
     private void Awake()
     {
-        _regPanel.SetActive(true);
-        _logPanel.SetActive(false);
+        if(SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            _regPanel.SetActive(true);
+            _logPanel.SetActive(false);
+        }
     }
 
     public void ChangeWindowToLogin()
@@ -31,7 +34,13 @@ public class WindowController : MonoBehaviour
         _logPanel.SetActive(true);
     }
 
-    public void ChangeScene()
+    public void ChangeSceneToLogin()
+    {
+        SceneManager.LoadScene("MainMenu");
+        SceneManager.UnloadSceneAsync("RunnerScene");
+    }
+
+    public void ChangeSceneToRunner()
     {
         SceneManager.LoadScene("RunnerScene");
         SceneManager.UnloadSceneAsync("MainMenu");

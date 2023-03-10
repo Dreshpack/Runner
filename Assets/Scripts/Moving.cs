@@ -11,9 +11,9 @@ public class Moving : MonoBehaviour
     [SerializeField] private Animator _animator;
     [SerializeField] private SwipeController _swipe;
     [SerializeField] private CharacterController _characterController;
-    [SerializeField] private Collision _collision;
+    [SerializeField] private PlayerCollision _playerCollision;
     [SerializeField] private Pause _pauseScript;
-    [SerializeField] private StartGame _startGame;
+    [SerializeField] private InitManager _initManager;
     [SerializeField] private RevivalAds _revivalAds;
     [SerializeField] private TileManager _tileManager;
     [SerializeField] private Panel _losePanel;
@@ -54,27 +54,27 @@ public class Moving : MonoBehaviour
 
     private void OnEnable()
     {
-        _collision.isDead += Die;
+        _playerCollision.isDead += Die;
         _inputType.isJumping += Jump;
         _inputType.isRolling += Roll;
         _inputType.leftMove += LeftMove;
         _inputType.rightMove += RightMove;
         _pauseScript._pauseGame += PauseMovement;
         _pauseScript._continueGame += ContinueGame;
-        _startGame.isStarted += StartRunning;
+        _initManager.isStarted += StartRunning;
         _revivalAds.played += Revive;
     }
 
     private void OnDisable()
     {
-        _collision.isDead -= Die;
+        _playerCollision.isDead -= Die;
         _inputType.isJumping -= Jump;
         _inputType.isRolling -= Roll;
         _inputType.leftMove -= LeftMove;
         _inputType.rightMove -= RightMove;
         _pauseScript._pauseGame -= PauseMovement;
         _pauseScript._continueGame -= ContinueGame;
-        _startGame.isStarted -= StartRunning;
+        _initManager.isStarted -= StartRunning;
         _revivalAds.played += Revive;
     }
 
@@ -127,13 +127,11 @@ public class Moving : MonoBehaviour
         if (_rollCounter <= 0f)
         {
             _rollCounter = 0f;
-            //_characterController.center = new Vector3(0, _colCenterY, 0);
             _characterController.center = new Vector3(0, -0.5f, 0);
             _characterController.height = _colHeight;
         }
         _rollCounter = 0.5f;
         y -= 10f;
-        //_characterController.center = new Vector3(0, _colCenterY / 4, 0);
         _characterController.center = new Vector3(0, -0.5f, 0);
         _characterController.height = _colHeight / 4;
         _animator.SetTrigger("slide");
@@ -219,7 +217,7 @@ public class Moving : MonoBehaviour
     private void Revive()
     {
         _isDead = false;
-        _collision.Revive();
+        _playerCollision.Revive();
         _animator.SetBool("isDead", _isDead);
         _animator.SetFloat("speed", 1f);
         Debug.Log("Revived");
