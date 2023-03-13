@@ -12,19 +12,19 @@ public class TileManager : MonoBehaviour
 
     private List<GameObject> _activeTiles = new List<GameObject>();
 
-    private float _zCoodSpawn = 0;
-    private float _tileLength = 10;
-    private const int _numberOfTiles = 11;
+    private float _zCoodSpawn = -20;
+    private float _tileLength = 30;
+    private const int _numberOfTiles = 5;
 
     private void OnEnable()
     {
-        //_revivalAds.played += SetVoidTile;
         _revivalAds.isPlaying += SetVoidTile;
     }
 
     public void SpawnTile(int tileIndex)
     {
-        GameObject currentTile = Instantiate(_tilePrefabs[tileIndex], transform.forward * _zCoodSpawn, transform.rotation);
+        //GameObject currentTile = Instantiate(_tilePrefabs[tileIndex], transform.forward * _zCoodSpawn, transform.rotation);
+        GameObject currentTile = PoolManager.Instance.Spawn(_tilePrefabs[tileIndex], transform.forward * _zCoodSpawn, transform.rotation);
         _activeTiles.Add(currentTile);
         _zCoodSpawn += _tileLength;
     }
@@ -37,7 +37,7 @@ public class TileManager : MonoBehaviour
 
     private void ArrangmentTiles()
     {
-        if(_activeTiles.Last().transform.position.z - _playerTransform.position.z < 400)
+        if(_activeTiles.Last().transform.position.z - _playerTransform.position.z < 100)
         {
             SpawnTile(Random.Range(1, _numberOfTiles));
         }
@@ -49,7 +49,8 @@ public class TileManager : MonoBehaviour
 
     private void DeleteTile()
     {
-        Destroy(_activeTiles[0]);
+        //Destroy(_activeTiles[0]);
+        PoolManager.Instance.Despawn(_activeTiles[0]);
         _activeTiles.RemoveAt(0);
     }
 

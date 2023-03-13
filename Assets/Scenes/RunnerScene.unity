@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -287,17 +287,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tilePrefabs:
-  - {fileID: 7077840845170010624, guid: a8ce29acdabb5264b8f3856e6b08d183, type: 3}
-  - {fileID: 8014840135175845680, guid: 2312ec041b4166e4dbb00e75c2c7916b, type: 3}
-  - {fileID: 2010862601177913276, guid: d88a7ad1fdf5848408b64e45fb1af5ca, type: 3}
-  - {fileID: 3454307365162573427, guid: dce27ab1bb610c04b99edc17159b7667, type: 3}
-  - {fileID: 7055688946112951920, guid: ff5d8eb40dcb17744b2c11154750b6fa, type: 3}
-  - {fileID: 7750734549729977162, guid: 27ae77511f7816e4ea66a1eb88fa8771, type: 3}
-  - {fileID: 7684587980876004182, guid: 9aa6b4e0caa981945a30cf161624d5b6, type: 3}
-  - {fileID: 2534803595749549339, guid: f8c2618f83f9b3846898d0bd393c29bd, type: 3}
-  - {fileID: 6996651969513420624, guid: d0ebe16b995c9a846b859d5f6cff0165, type: 3}
-  - {fileID: 5272933041973227892, guid: 14b3c526fcbd9ba4d8e531d5f200a677, type: 3}
-  - {fileID: 3958319263219660967, guid: 0f58d33f15afbfd4ca823528711c2c6f, type: 3}
+  - {fileID: 1901482532368983003, guid: 8af681798d0c8d24b89495cd03926eb9, type: 3}
+  - {fileID: 7267580236359121416, guid: b5d546917d32d9d46990113ad2cd872b, type: 3}
+  - {fileID: 2312486594747236149, guid: a97b7c36361837a4e97b4458e5232d61, type: 3}
+  - {fileID: 5967100635285561310, guid: cfca6a5093dae344c9eeb3ee90a6b37a, type: 3}
+  - {fileID: 7521229917555507326, guid: 634013fca545fb74695e7ec432433839, type: 3}
   _playerTransform: {fileID: 1878507005}
   _revivalAds: {fileID: 60006179}
   _playerCollision: {fileID: 1878507013}
@@ -522,6 +516,7 @@ RectTransform:
   - {fileID: 2245014}
   - {fileID: 2019729360}
   - {fileID: 427473157}
+  - {fileID: 841019226}
   m_Father: {fileID: 381769295}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -792,7 +787,6 @@ RectTransform:
   - {fileID: 970353723}
   - {fileID: 1207207429}
   - {fileID: 256652763}
-  - {fileID: 841019226}
   - {fileID: 1333620283}
   - {fileID: 1685657726}
   m_Father: {fileID: 0}
@@ -2629,7 +2623,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &841019226
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2643,7 +2637,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1012405818}
-  m_Father: {fileID: 381769295}
+  m_Father: {fileID: 256652763}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
@@ -4003,7 +3997,7 @@ RectTransform:
   - {fileID: 625582890}
   - {fileID: 1819125356}
   m_Father: {fileID: 381769295}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -4157,7 +4151,7 @@ RectTransform:
   m_Children:
   - {fileID: 627397895}
   m_Father: {fileID: 381769295}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}

@@ -7,7 +7,7 @@ public class GameOverAnim : MonoBehaviour
     [SerializeField] Transform _startPos;
     public void LabelMove()
     {
-        transform.DOMove(_pointToMove.position, 2);
+        transform.DOMove(_pointToMove.position, 1);
     }
     public void LabelStartPos()
     {
