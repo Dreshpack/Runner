@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -207,7 +207,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 381769296}
+      - m_Target: {fileID: 2094767996}
         m_TargetAssemblyTypeName: Pause, Assembly-CSharp
         m_MethodName: ContinueGame
         m_Mode: 1
@@ -702,7 +702,6 @@ GameObject:
   - component: {fileID: 381769294}
   - component: {fileID: 381769293}
   - component: {fileID: 381769292}
-  - component: {fileID: 381769296}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -797,22 +796,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &381769296
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 381769291}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b5981ae0ae95974da9fc1678d2f64fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _pausePanel: {fileID: 256652762}
-  _pauseButton: {fileID: 1207207428}
-  _continueButton: {fileID: 2245013}
-  _Username: {fileID: 2019729361}
 --- !u!1 &399961096
 GameObject:
   m_ObjectHideFlags: 0
@@ -3024,7 +3007,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scoreText: {fileID: 970353724}
   _playerCollision: {fileID: 1878507013}
-  _pauseScript: {fileID: 381769296}
   _dataBase: {fileID: 399961097}
   _revivalAds: {fileID: 60006179}
 --- !u!1 &996637621
@@ -3786,7 +3768,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 381769296}
+      - m_Target: {fileID: 2094767996}
         m_TargetAssemblyTypeName: Pause, Assembly-CSharp
         m_MethodName: PauseGame
         m_Mode: 1
@@ -4527,8 +4509,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1878507005}
   - component: {fileID: 1878507001}
+  - component: {fileID: 1878507015}
   - component: {fileID: 1878507013}
   - component: {fileID: 1878507012}
+  - component: {fileID: 1878507014}
   m_Layer: 0
   m_Name: player
   m_TagString: Player
@@ -4582,16 +4566,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40b314deefb8d2844a7546849aa62ba2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _meshAgent: {fileID: 8962083050076121211}
-  _animator: {fileID: 8962083050076121212}
   _swipe: {fileID: 1747094936}
   _characterController: {fileID: 1878507001}
   _playerCollision: {fileID: 1878507013}
-  _pauseScript: {fileID: 381769296}
-  _initManager: {fileID: 1685657730}
-  _revivalAds: {fileID: 60006179}
-  _tileManager: {fileID: 21922361}
-  _losePanel: {fileID: 2094767993}
+  _animManager: {fileID: 1878507015}
 --- !u!114 &1878507013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4605,8 +4583,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 1878507001}
+--- !u!114 &1878507014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878507000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc8965c1933ab8649b7a5c6111be20bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerCollision: {fileID: 1878507013}
   _revivalAds: {fileID: 60006179}
-  currentBorder: {fileID: 0}
+  _movingController: {fileID: 1878507012}
+  _losePanel: {fileID: 2094767993}
+  _initManager: {fileID: 1685657730}
+--- !u!114 &1878507015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878507000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32b9fb45b10b08641afd43e97c44003e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 8962083050076121212}
 --- !u!1 &1881681708
 GameObject:
   m_ObjectHideFlags: 0
@@ -4904,6 +4910,7 @@ GameObject:
   - component: {fileID: 2094767994}
   - component: {fileID: 2094767993}
   - component: {fileID: 2094767995}
+  - component: {fileID: 2094767996}
   m_Layer: 0
   m_Name: UiManager
   m_TagString: Untagged
@@ -4961,6 +4968,21 @@ MonoBehaviour:
     m_Handle: 0
   _gameScene:
     m_Handle: 0
+--- !u!114 &2094767996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2094767992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b5981ae0ae95974da9fc1678d2f64fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _pausePanel: {fileID: 256652762}
+  _pauseButton: {fileID: 1207207428}
+  _username: {fileID: 2019729361}
 --- !u!1 &9572841532502126
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,17 +4,15 @@ using System;
 public class PlayerCollision : MonoBehaviour
 {
     [SerializeField] CharacterController characterController;
-    [SerializeField] RevivalAds _revivalAds;
 
-    public GameObject currentBorder;
-    public event Action isDead;
-    public delegate void getBorder(GameObject border);
-    public event getBorder getHit;
     private bool _isDead = false;
+
+    public GameObject CurrentBorder { get; private set; }
+    public event Action isDead;
+
 
     public void Revive()
     {
-        Debug.Log("start collision");
         _isDead = false;
     }
 
@@ -22,10 +20,9 @@ public class PlayerCollision : MonoBehaviour
     {
         if (hit.transform.tag == "Border" && !_isDead)
         {
-            currentBorder = hit.gameObject;
+            CurrentBorder = hit.gameObject;
             _isDead = true;
             Debug.Log(hit.gameObject);
-            getHit?.Invoke(currentBorder);
             isDead?.Invoke();
         }
     }

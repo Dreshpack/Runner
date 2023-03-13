@@ -1,23 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public enum Side { left, middle, right }
 
 public class Moving : MonoBehaviour
 {
-    [SerializeField] private NavMeshAgent _meshAgent;
-    [SerializeField] private Animator _animator;
     [SerializeField] private SwipeController _swipe;
     [SerializeField] private CharacterController _characterController;
-    [SerializeField] private PlayerCollision _playerCollision;
-    [SerializeField] private Pause _pauseScript;
-    [SerializeField] private InitManager _initManager;
-    [SerializeField] private RevivalAds _revivalAds;
-    [SerializeField] private TileManager _tileManager;
-    [SerializeField] private Panel _losePanel;
+    [SerializeField] private AnimationManager _animManager;
 
+    #region Fields
     private InputManager _inputType;
 
     private Side _side = Side.middle;
@@ -26,7 +17,7 @@ public class Moving : MonoBehaviour
     private float _dodgeSpeed = 9;
     private float x, y;
 
-    private bool _isJumping = false;
+   
     private float _jumpPower = 7;
 
     private float _colHeight;
@@ -34,9 +25,9 @@ public class Moving : MonoBehaviour
     private float _rollCounter;
 
     private float _forwardSpeed = 0;
-    private float _currentSpeed;
 
     private bool _isDead = false;
+    #endregion
 
     private void Awake()
     {
@@ -54,45 +45,23 @@ public class Moving : MonoBehaviour
 
     private void OnEnable()
     {
-        _playerCollision.isDead += Die;
         _inputType.isJumping += Jump;
         _inputType.isRolling += Roll;
         _inputType.leftMove += LeftMove;
         _inputType.rightMove += RightMove;
-        _pauseScript._pauseGame += PauseMovement;
-        _pauseScript._continueGame += ContinueGame;
-        _initManager.isStarted += StartRunning;
-        _revivalAds.played += Revive;
     }
 
     private void OnDisable()
     {
-        _playerCollision.isDead -= Die;
         _inputType.isJumping -= Jump;
         _inputType.isRolling -= Roll;
         _inputType.leftMove -= LeftMove;
         _inputType.rightMove -= RightMove;
-        _pauseScript._pauseGame -= PauseMovement;
-        _pauseScript._continueGame -= ContinueGame;
-        _initManager.isStarted -= StartRunning;
-        _revivalAds.played += Revive;
     }
 
     private void FixedUpdate()
     {
         Running();
-    }
-
-    private void IncreaseSpeed()
-    {
-        if (_forwardSpeed < 50)
-            _forwardSpeed += Time.deltaTime * 0.1f;
-    }
-
-    private void StartRunning()
-    {
-        _forwardSpeed = 7;
-        _animator.SetFloat("speed", 1f);
     }
 
     private void Running()
@@ -104,6 +73,18 @@ public class Moving : MonoBehaviour
         }
     }
 
+    private void IncreaseSpeed()
+    {
+        if (_forwardSpeed < 50)
+            _forwardSpeed += Time.deltaTime * 0.1f;
+    }
+
+    public void StartRunning()
+    {
+        _forwardSpeed = 7;
+        _animManager.Run();
+    }
+
     private void SetStrategy(InputManager inputType)
     {
         Debug.Log("input type set" + inputType.ToString());
@@ -112,12 +93,10 @@ public class Moving : MonoBehaviour
 
     private void Jump()
     {
-        if (_characterController.isGrounded && !_isJumping)
+        if (_characterController.isGrounded)
         {
             y = _jumpPower;
-            _isJumping = true;
-            _animator.SetTrigger("jump");
-            _animator.SetBool("isJumping", _isJumping);
+            _animManager.Jump();
         }
     }
 
@@ -134,8 +113,7 @@ public class Moving : MonoBehaviour
         y -= 10f;
         _characterController.center = new Vector3(0, -0.5f, 0);
         _characterController.height = _colHeight / 4;
-        _animator.SetTrigger("slide");
-        _isJumping = false;
+        _animManager.Roll();
     }
 
     private void RightMove()
@@ -166,12 +144,19 @@ public class Moving : MonoBehaviour
         }
     }
 
+    public void Move()
+    {
+        NormalizationVertical();
+        Vector3 moveVector = new Vector3((x - transform.position.x), y * Time.deltaTime, _forwardSpeed * Time.deltaTime);
+        x = Mathf.Lerp(x, _newXPos, Time.deltaTime * _dodgeSpeed);
+        _characterController.Move(moveVector);
+    }
+
     private void NormalizationVertical()
     {
         if (!_characterController.isGrounded)
         {
             y -= _jumpPower * 2 * Time.deltaTime;
-            _isJumping = false;
         }
         _rollCounter -= Time.deltaTime / 2;
         if (_rollCounter <= 0f)
@@ -182,45 +167,16 @@ public class Moving : MonoBehaviour
         }
     }
 
-    public void Move()
-    {
-        NormalizationVertical();
-        Vector3 moveVector = new Vector3((x - transform.position.x), y * Time.deltaTime, _forwardSpeed * Time.deltaTime);
-        x = Mathf.Lerp(x, _newXPos, Time.deltaTime * _dodgeSpeed);
-        _characterController.Move(moveVector);
-    }
-
-    private void PauseMovement()
-    {
-        _currentSpeed = _forwardSpeed;
-        _forwardSpeed = 0;
-        _animator.SetFloat("speed", _forwardSpeed);
-        _animator.speed = 0;
-    }
-
-    private void ContinueGame()
-    {
-        _forwardSpeed = _currentSpeed;
-        _animator.SetFloat("speed", _forwardSpeed);
-        _animator.speed = 1;
-    }
-
-    private void Die()
+    public void Die()
     {
         _isDead = true;
-        _losePanel.Lose();
-        _animator.SetFloat("speed", 0f);
-        _animator.SetBool("isDead", _isDead);
-        _animator.SetTrigger("die");
+        _animManager.Die();
     }
 
-    private void Revive()
+    public void Revive()
     {
         _isDead = false;
-        _playerCollision.Revive();
-        _animator.SetBool("isDead", _isDead);
-        _animator.SetFloat("speed", 1f);
-        Debug.Log("Revived");
+        _animManager.Revive();
     }
 
 }

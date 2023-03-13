@@ -4,7 +4,6 @@ using UnityEngine;
 public class Panel : MonoBehaviour
 {
     [SerializeField] private GameObject _losePanel;
-    [SerializeField] private Collision _playerCollision;
     [SerializeField] private RevivalAds _ads;
     [SerializeField] private GameObject _adsButton;
     [SerializeField] private WindowController _windowController;

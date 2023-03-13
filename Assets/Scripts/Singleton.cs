@@ -28,7 +28,7 @@ public abstract class Singleton<T> : MonoBehaviour where T: MonoBehaviour
                 ST.name = typeof(T).ToString();
                 instance = ST.AddComponent<T>();
             }
-            DontDestroyOnLoad(instance);
+            //DontDestroyOnLoad(instance);
             return instance;
         }
     }

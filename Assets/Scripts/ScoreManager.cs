@@ -6,7 +6,6 @@ public class ScoreManager : MonoBehaviour
 {
     [SerializeField] private TMP_Text _scoreText;
     [SerializeField] private PlayerCollision _playerCollision;
-    [SerializeField] private Pause _pauseScript;
     [SerializeField] private DataBase _dataBase;
     [SerializeField] private RevivalAds _revivalAds;
 
@@ -17,22 +16,18 @@ public class ScoreManager : MonoBehaviour
 
     private void OnEnable()
     {
-        _playerCollision.isDead += Die;
-        _pauseScript._pauseGame += PauseCounting;
-        _pauseScript._continueGame += ContinueCounting;
+        _playerCollision.isDead += OnDie;
         _revivalAds.played += Revive;
     }
 
     private void OnDisable()
     {
-        _playerCollision.isDead -= Die;
-        _pauseScript._pauseGame -= PauseCounting;
-        _pauseScript._continueGame -= ContinueCounting;
+        _playerCollision.isDead -= OnDie;
         _revivalAds.played -= Revive;
     }
 
-    private void Die()
-    { 
+    private void OnDie()
+    {
         _dataBase.SetScore(PlayerPrefs.GetString("Name"), (int)_score);
         _isDead = true;
     }
@@ -40,31 +35,19 @@ public class ScoreManager : MonoBehaviour
     private void Revive()
     {
         _isDead = false;
-    }    
-
-    private void PauseCounting()
-    {
-        _paused = true;
     }
 
-    private void ContinueCounting()
+    private void FixedUpdate()
     {
-        _paused = false;
+        if (!_isDead && !_paused)
+            UpdateScore();
     }
 
     private void UpdateScore()
     {
         _score += _pointsPerSecond * Time.deltaTime;
         _pointsPerSecond += Time.deltaTime * 0.1f;
-    }
-    private void DisplayText()
-    {
         _scoreText.text = "Score: " + (int)_score;
     }
-    private void FixedUpdate()
-    {
-        if(!_isDead && !_paused)
-        UpdateScore();
-        DisplayText();
-    }
+
 }

@@ -12,7 +12,7 @@ public class TileManager : MonoBehaviour
 
     private List<GameObject> _activeTiles = new List<GameObject>();
 
-    private float _zCoodSpawn = -20;
+    private float _zCoodSpawn = 0;
     private float _tileLength = 30;
     private const int _numberOfTiles = 5;
 
@@ -41,28 +41,26 @@ public class TileManager : MonoBehaviour
         {
             SpawnTile(Random.Range(1, _numberOfTiles));
         }
-        if (_playerTransform.position.z - _tileLength > _zCoodSpawn - (_numberOfTiles * _tileLength))
-        {
+        if (_activeTiles.Count > 7)
             DeleteTile();
-        }
     }
 
     private void DeleteTile()
     {
-        //Destroy(_activeTiles[0]);
         PoolManager.Instance.Despawn(_activeTiles[0]);
         _activeTiles.RemoveAt(0);
     }
 
     private void DeleteSpecificTile()
     {
-        Debug.Log(_playerCollision.currentBorder);
-        Destroy(_playerCollision.currentBorder);
+        Debug.Log(_playerCollision.CurrentBorder);
+        Destroy(_playerCollision.CurrentBorder);
     }
 
     private void Start()
     {
-        SpawnTile(0);
+        _zCoodSpawn = 0;
+        _activeTiles.Clear();
         for (int i = 0; i < _numberOfTiles; i++)
         {
             if (i == 0)

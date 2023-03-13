@@ -12,6 +12,7 @@ public class InitManager : MonoBehaviour
     public void StartRun()
     {
         isStarted?.Invoke();
+        Time.timeScale = 1;
         _pauseButton.SetActive(true);
         _score.SetActive(true);
         _startPanel.SetActive(false);

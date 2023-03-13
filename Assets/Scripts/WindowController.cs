@@ -5,8 +5,6 @@ public class WindowController : MonoBehaviour
 {
     [SerializeField] private GameObject _regPanel;
     [SerializeField] private GameObject _logPanel;
-    [SerializeField] private Scene _regScene;
-    [SerializeField] private Scene _gameScene;
 
     private void Awake()
     {
@@ -25,15 +23,12 @@ public class WindowController : MonoBehaviour
 
     public void ChangeWindowToReg()
     {
-        _regPanel.SetActive(true);
         _logPanel.SetActive(false);
+        _regPanel.SetActive(true);
     }
 
-    private void HideLogWindow()
-    {
-        _logPanel.SetActive(true);
-    }
-
+   
+   
     public void ChangeSceneToLogin()
     {
         SceneManager.LoadScene("MainMenu");

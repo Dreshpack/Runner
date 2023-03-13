@@ -6,27 +6,25 @@ public class Pause : MonoBehaviour
 {
     [SerializeField] private GameObject _pausePanel;
     [SerializeField] private GameObject _pauseButton;
-    [SerializeField] private GameObject _continueButton;
-    [SerializeField] private TMP_Text _Username;
+    [SerializeField] private TMP_Text _username;
     
-    public Action _pauseGame;
-    public Action _continueGame;
+    private const string NAME_KEY = "Name";
 
     private void Start()
     {
-        _Username.text = PlayerPrefs.GetString("Name");
+        _username.text = PlayerPrefs.GetString(NAME_KEY);
     }
 
     public void PauseGame()
     {
-        _pauseGame?.Invoke();
+        Time.timeScale = 0;
         _pausePanel.SetActive(true);
         _pauseButton.SetActive(false);
     }
 
     public void ContinueGame()
     {
-        _continueGame?.Invoke();
+        Time.timeScale = 1;
         _pauseButton.SetActive(true);
         _pausePanel.SetActive(false);
     }
